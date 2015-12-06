@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <script src="toHaskell.js"></script>
+</head>
+<body>
+    <textarea rows="30" cols="120" id="in"></textarea><br /><a href="#" id="convert">Convert</a><br />
+    <textarea rows="30" cols="120" id="out"></textarea>
+
+    <script>
+        $(function () {
+            $('#convert').click(function () {
+                var pre = $('#in').val();
+                var post = toHaskell(pre);
+                $('#out').val(post);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script>
+        function describe() { }
+    </script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="angular.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <script src="VisitToTheHeadquarters.js"></script>
+    <script src="visitController.js"></script>
+
+    <style>
+        body {
+            font-size: 10px;
+        }
+
+        td.ok {
+            background: lightgreen;
+            font-size: 16px;
+        }
+
+        td.bad {
+            background: red;
+            font-size: 16px;
+        }
+
+        td.warn {
+            background: orange;
+            font-size: 16px;
+        }
+
+        td.subtle {
+            color : lightgrey;
+        }
+
+        td.white {
+            color : white;
+        }
+
+        div.ok {
+            background: lightgreen;
+            font-size: 16px;
+        }
+
+        div.bad {
+            background: red;
+            font-size: 16px;
+        }
+
+        div.warn {
+            background: orange;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body ng-app="visitApp">
+    <div ng-controller="visitController as vm" class="col-md-12" ng-keyup="vm.checkEvents($event)">
+
+        <h1>Visit to the Headquarters - Simulation</h1>
+
+        <table class="table table-bordered table-condensed">
+            <tr ng-repeat-start="floor in vm.sortedFloors">
+                <td rowspan="3" width="40px">Floor {{floor.floor}}</td>
+                <td width="100px">Rooms</td>
+                <td ng-repeat="room in floor.rooms" width="100px" class="{{vm.chooseStyle(room.agents,'ok','bad','subtle')}}">
+                    {{vm.showAgents(room.agents,room.name)}}
+                </td>
+
+                <td colspan="3" width="100px"></td>
+                <td width="100px" class="{{vm.chooseStyle(floor.liftDownQueue,'warn','warn')}}">
+                    <i class="fa fa-level-down"></i>
+                    {{vm.showAgents(floor.liftDownQueue)}}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Room Queues</td>
+                <td ng-repeat="room in floor.rooms" class="{{vm.chooseStyle(room.queue,'ok','warn','white')}}">{{vm.showAgents(room.queue,room.name)}}</td>
+                <td width="20px">{{floor.floor}}</td>
+                <td width="100px" class="{{vm.chooseStyle(floor.liftUp,'ok','bad')}}">
+                    <i class="fa fa-arrow-up"></i>
+                    {{vm.showAgents(floor.liftUp)}}
+                </td>
+                <td width="100px" class="{{vm.chooseStyle(floor.liftDown,'ok','bad')}}">
+                    <i class="fa fa-arrow-down"></i>
+                    {{vm.showAgents(floor.liftDown)}}
+                </td>
+            </tr>
+            <tr>
+                <td>Corridor</td>
+                <td colspan="{{vm.roomsPerFloor}}">
+                    <div class="col-md-12">
+                        <div class="col-md-3">
+                            <div class="col-md-8 {{vm.chooseStyle(floor.corridorLeftRoom,'ok','ok')}}">
+                                Left Room <i class="fa fa-arrow-right"></i>&nbsp;
+                                {{vm.showAgents(floor.corridorLeftRoom)}}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-12 {{vm.chooseStyle(floor.corridorToRoom,'ok','ok')}}" style="text-align:right">
+                                {{vm.showAgents(floor.corridorToRoom)}} <i class="fa fa-arrow-left"></i> Going to room
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-12 {{vm.chooseStyle(floor.corridorToLift,'ok','ok')}}">
+                                Going to Lift <i class="fa fa-arrow-right"></i>&nbsp;{{vm.showAgents(floor.corridorToLift)}}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="col-md-8 {{vm.chooseStyle(floor.corridorLeftLift,'ok','ok')}}" style="text-align:right">
+                                {{vm.showAgents(floor.corridorLeftLift)}} <i class="fa fa-arrow-left"></i>&nbsp;Left Lift
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td colspan="3" width="100px"></td>
+                <td width="100px" class="{{vm.chooseStyle(floor.liftUpQueue,'warn','warn')}}">
+                    <i class="fa fa-level-up"></i>
+                    {{vm.showAgents(floor.liftUpQueue)}}
+                </td>
+            </tr>
+
+            <tr ng-repeat-end ng-show="floor.floor != 1">
+                <td colspan="{{vm.roomsPerFloor+2}}" style="background: grey">&nbsp;</td>
+                <td width="20">{{floor.floorLower}}</td>
+                <td width="100px" class="{{vm.chooseStyle(floor.liftUpLower,'ok','bad')}}">
+                    <i class="fa fa-arrow-up"></i>
+                    {{vm.showAgents(floor.liftUpLower)}}
+                </td>
+                <td width="100px" class="{{vm.chooseStyle(floor.liftDownLower,'ok','bad')}}">
+                    <i class="fa fa-arrow-down"></i>
+                    {{vm.showAgents(floor.liftDownLower)}}
+                </td>
+                <td style="background: grey">&nbsp;</td>
+            </tr>
+            <tr></tr>
+        </table>
+
+        <table class="table table-condensed table-bordered" style="font-size: 16px">
+            <tr>
+                <td  class="{{vm.chooseStyle(vm.outside,'','')}}">Waiting to start: {{vm.showAgents(vm.pending)}}</td>
+                <td  class="{{vm.chooseStyle(vm.outside,'warn','warn')}}">About to start: {{vm.showAgents(vm.outside)}}</td>
+                <td  class="{{vm.chooseStyle(vm.finished,'ok','ok')}}">Completed visits: {{vm.showAgents(vm.finished)}}</td>
+
+                <td>
+                    <a class="btn btn-primary" ng-click="vm.back()" style="margin-left: 30px; margin-right: 20px"><i class="fa fa-arrow-left"></i></a>
+                    {{vm.toHHMMSS(vm.time)}}
+                    <a class="btn btn-primary" ng-click="vm.forward()" style="margin-left: 20px"><i class="fa fa-arrow-right"></i></a>
+
+                    <a class="btn btn-primary" ng-click="vm.start()" style="margin-left: 100px"><i class="fa fa-play"></i></a>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        var myApp = angular.module("visitApp", []);
+        myApp.controller("visitController", visitController);
+    </script>
+</body>
+</html>
