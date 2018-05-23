@@ -347,5 +347,23 @@ namespace Algorithms.LinkedList
 
             return b.ToString();
         }
+
+        [TestMethod]
+        public void Test_Add_List1Shorter()
+        {
+            // Arrange
+            var head = Node<int>.Create(2);
+            head
+                .SetNext(Node<int>.Create(5))
+                .SetNext(Node<int>.Create(7))
+                .SetNext(Node<int>.Create(10))
+                .SetNext(Node<int>.Create(15));
+
+            // Asset
+            Node<int>.Delete(head, Node<int>.Create(1));
+
+            // Assert
+            Assert.AreEqual("2,5,7,10,15,", ToString(head));
+        }
     }
 }
