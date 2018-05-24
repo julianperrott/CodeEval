@@ -45,8 +45,8 @@ namespace Algorithms.Dynamic
         [TestMethod]
         public void Test()
         {
-            String s1 = "AGGTAB";
-            String s2 = "GXTXAYB";
+            string s1 = "AGGTAB";
+            string s2 = "GXTXAYB";
 
             char[] X = s1.ToCharArray();
             char[] Y = s2.ToCharArray();
